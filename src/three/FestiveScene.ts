@@ -105,7 +105,7 @@ export class FestiveScene {
         map: tex,
         transparent: true,
         depthWrite: false,
-        opacity: 0.96,
+        opacity: 0.6,
       });
       const sprite = new THREE.Sprite(mat);
 
@@ -116,7 +116,7 @@ export class FestiveScene {
           transparent: true,
           depthWrite: false,
           blending: THREE.AdditiveBlending,
-          opacity: 0.55,
+          opacity: 0.32,
         });
         glow = new THREE.Sprite(gmat);
         this.scene.add(glow);
@@ -209,13 +209,13 @@ export class FestiveScene {
       // Twinkle for sparkles.
       if (it.kind.twinkle) {
         const tw = 0.7 + 0.3 * Math.sin(t * 3 + it.swayPhase);
-        it.sprite.material.opacity = tw;
+        it.sprite.material.opacity = 0.55 * tw;
         it.sprite.scale.setScalar(it.scale * (0.85 + 0.15 * tw));
       }
 
       if (it.glow) {
         it.glow.position.set(p.x, p.y, p.z - 0.1);
-        const pulse = 0.45 + 0.15 * Math.sin(t * 1.5 + it.swayPhase);
+        const pulse = 0.26 + 0.1 * Math.sin(t * 1.5 + it.swayPhase);
         it.glow.material.opacity = pulse;
       }
     }
