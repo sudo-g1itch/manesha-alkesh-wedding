@@ -9,7 +9,7 @@ export interface WeddingEvent {
   time: string;
   venue: string;
   address: string;
-  dressCode: string;
+  dressCode?: string;
   mapsUrl: string;
 }
 
@@ -19,6 +19,12 @@ export interface Person {
   bio: string;
 }
 
+export interface FamilySide {
+  relation: string;
+  parents: string;
+  home: string;
+}
+
 export const content = {
   couple: {
     bride: "Manesha",
@@ -26,66 +32,56 @@ export const content = {
     /** Short tagline shown beneath the names in the hero. */
     tagline: "are getting married",
     /** Primary wedding date shown in the hero. */
-    date: "Saturday, the Fifteenth of November, 2026",
+    date: "Sunday, the Twenty-Third of August, 2026",
     /** Machine-readable date the countdown ticks down to (IST). */
-    dateISO: "2026-11-15T18:30:00+05:30",
-    location: "Udaipur, India",
+    dateISO: "2026-08-23T12:00:00+05:30",
+    location: "Ernakulam Town Hall · Kochi, Kerala",
   },
 
   families: {
     intro: "Together with their families",
-    brideParents: "Daughter of Mr. Rajesh & Mrs. Sunita Sharma",
-    groomParents: "Son of Mr. Mahesh & Mrs. Anita Patel",
+    bride: <FamilySide>{
+      relation: "Daughter of",
+      parents: "Mr. Manoj P.L & Mrs. Shalini A.S",
+      home: "Pathazhapurakkal (H), Kazhuthumuttu, Thoppumpady P.O., Kochi - 682005",
+    },
+    groom: <FamilySide>{
+      relation: "Son of",
+      parents: "Mr. K. S. Rajeev & Mrs. Shylaja P.T.",
+      home: "Kulathunkal (H), Valiyakandam, Kattappana P.O., Idukki - 685508",
+    },
     blessing:
-      "request the honour of your presence as they begin their journey together",
+      "cordially invite your esteemed presence and blessings, with family, on the auspicious occasion of the marriage of Manesha Manoj with Alkesh Rajeev",
     image: "images/hands.jpg",
   },
 
   events: <WeddingEvent[]>[
     {
-      name: "Mehndi",
-      date: "Thursday, 13 November 2026",
-      time: "4:00 PM onwards",
-      venue: "The Courtyard, Lake Palace Road",
-      address: "Lake Palace Road, Udaipur, Rajasthan",
-      dressCode: "Festive yellows & greens",
-      mapsUrl: "https://maps.google.com/?q=Lake+Palace+Road+Udaipur",
-    },
-    {
-      name: "Haldi",
-      date: "Friday, 14 November 2026",
-      time: "10:00 AM onwards",
-      venue: "Garden Lawn, Family Residence",
-      address: "Sector 11, Udaipur, Rajasthan",
-      dressCode: "Bright florals",
-      mapsUrl: "https://maps.google.com/?q=Udaipur+Rajasthan",
-    },
-    {
       name: "Sangeet",
-      date: "Friday, 14 November 2026",
-      time: "7:00 PM onwards",
-      venue: "The Grand Ballroom, Taj Aravali",
-      address: "Aravali Hills, Udaipur, Rajasthan",
-      dressCode: "Indo-western glam",
-      mapsUrl: "https://maps.google.com/?q=Taj+Aravali+Udaipur",
+      date: "Saturday, 22 August 2026",
+      time: "5:00 PM onwards",
+      venue: "CSI Heritage Bungalow",
+      address: "Fort Kochi, Kerala",
+      mapsUrl:
+        "https://www.google.com/maps/search/?api=1&query=CSI+Heritage+Bungalow+Fort+Kochi",
     },
     {
-      name: "Wedding Ceremony",
-      date: "Saturday, 15 November 2026",
-      time: "6:30 PM (Pheras at 8:00 PM)",
-      venue: "Lakeside Mandap, Jagmandir",
-      address: "Jagmandir Island, Lake Pichola, Udaipur",
-      dressCode: "Traditional formal",
-      mapsUrl: "https://maps.google.com/?q=Jagmandir+Udaipur",
+      name: "Wedding",
+      date: "Sunday, 23 August 2026",
+      time: "Muhurtham · 12:00 PM – 12:22 PM",
+      venue: "Ernakulam Town Hall",
+      address: "Ernakulam, Kochi, Kerala",
+      mapsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Ernakulam+Town+Hall+Kochi",
     },
     {
       name: "Reception",
-      date: "Sunday, 16 November 2026",
-      time: "7:30 PM onwards",
-      venue: "The Crystal Hall, Leela Palace",
-      address: "Lake Pichola, Udaipur, Rajasthan",
-      dressCode: "Elegant cocktail",
-      mapsUrl: "https://maps.google.com/?q=Leela+Palace+Udaipur",
+      date: "Sunday, 30 August 2026",
+      time: "4:00 PM onwards",
+      venue: "Highrange Convention Centre & Club House",
+      address: "Kattappana, Idukki, Kerala",
+      mapsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Highrange+Convention+Centre+and+Club+House+Kattappana",
     },
   ],
 
@@ -117,7 +113,9 @@ export const content = {
   footer: {
     closing: "We look forward to celebrating with you",
     initials: "M & A",
-    date: "15 . 11 . 2026",
+    date: "23 . 08 . 2026",
+    contact: "For enquiries: 8891216995 · 7736530296",
+    host: "Sharing the happiness, Maneeth Manoj",
   },
 };
 

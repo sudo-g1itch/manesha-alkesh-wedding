@@ -52,15 +52,21 @@ function heroSection(): string {
 
 function familiesSection(): string {
   const f = content.families;
+  const side = (s: typeof f.bride) => `
+      <div class="families__side reveal">
+        <span class="families__relation">${esc(s.relation)}</span>
+        <p class="families__parents">${esc(s.parents)}</p>
+        <p class="families__home">${esc(s.home)}</p>
+      </div>`;
   return `
   <section class="section families" id="families">
     <p class="eyebrow reveal">With joy &amp; gratitude</p>
     <hr class="divider reveal" />
     <p class="families__intro reveal">${esc(f.intro)}</p>
     <div class="families__grid">
-      <p class="families__side reveal">${esc(f.brideParents)}</p>
+      ${side(f.bride)}
       <span class="families__amp reveal">&amp;</span>
-      <p class="families__side reveal">${esc(f.groomParents)}</p>
+      ${side(f.groom)}
     </div>
     <figure class="accent-figure reveal">
       <img src="${esc(f.image)}" alt="Two hands joined in blessing" loading="lazy" />
@@ -78,8 +84,12 @@ function eventCard(e: WeddingEvent): string {
       <span class="event-card__label">Venue</span>
       <p class="event-card__row">${esc(e.venue)}</p>
       <p class="event-card__row">${esc(e.address)}</p>
-      <span class="event-card__label">Dress code</span>
-      <p class="event-card__row">${esc(e.dressCode)}</p>
+      ${
+        e.dressCode
+          ? `<span class="event-card__label">Dress code</span>
+      <p class="event-card__row">${esc(e.dressCode)}</p>`
+          : ""
+      }
       <a class="event-card__maps" href="${esc(e.mapsUrl)}" target="_blank" rel="noopener">
         View on map
       </a>
@@ -145,6 +155,8 @@ function footerSection(): string {
     <p class="site-footer__closing reveal">${esc(f.closing)}</p>
     <p class="site-footer__initials reveal">${esc(f.initials)}</p>
     <p class="site-footer__date reveal">${esc(f.date)}</p>
+    <p class="site-footer__contact reveal">${esc(f.contact)}</p>
+    <p class="site-footer__host reveal">${esc(f.host)}</p>
   </footer>`;
 }
 
