@@ -40,6 +40,17 @@ interface Item {
   baseX: number;
 }
 
+/** A short-lived celebratory particle (load / footer burst). */
+interface Burst {
+  sprite: THREE.Sprite;
+  vx: number;
+  vy: number;
+  rot: number;
+  life: number;
+  maxLife: number;
+  scale: number;
+}
+
 export class FestiveScene {
   private renderer: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
@@ -51,6 +62,20 @@ export class FestiveScene {
   private mouse = new THREE.Vector2();
   private targetMouse = new THREE.Vector2();
   private reduced: boolean;
+
+  // Parallax depth: two layers that pan at different rates with scroll.
+  private near = new THREE.Group();
+  private far = new THREE.Group();
+  // Smoothed scroll progress (0..1) and scroll-velocity "energy" (0..1).
+  private scrollTarget = 0;
+  private scroll = 0;
+  private energyTarget = 0;
+  private energy = 0;
+
+  // Reusable assets + transient celebratory bursts.
+  private texMap = new Map<string, THREE.Texture>();
+  private bursts: Burst[] = [];
+  private burstGroup = new THREE.Group();
 
   private constructor(canvas: HTMLCanvasElement, reducedMotion: boolean) {
     this.reduced = reducedMotion;
@@ -65,6 +90,8 @@ export class FestiveScene {
 
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
     this.camera.position.z = 10;
+
+    this.scene.add(this.far, this.near, this.burstGroup);
 
     this.count = window.innerWidth < 768 ? 23 : 43;
   }
@@ -90,7 +117,8 @@ export class FestiveScene {
     const entries = await Promise.all(
       unique.map(async (f) => [f, await loadSvgTexture(`${DECOR}/${f}.svg`)] as const)
     );
-    const texMap = new Map(entries);
+    this.texMap = new Map(entries);
+    const texMap = this.texMap;
     const glowTex = makeGlowTexture();
 
     // Weighted pick list.
@@ -109,6 +137,10 @@ export class FestiveScene {
       });
       const sprite = new THREE.Sprite(mat);
 
+      const scale = kind.min + Math.random() * (kind.max - kind.min);
+      // Bigger items read as "nearer" and live on the faster parallax layer.
+      const layer = scale > 0.5 ? this.near : this.far;
+
       let glow: THREE.Sprite | undefined;
       if (kind.glow) {
         const gmat = new THREE.SpriteMaterial({
@@ -119,11 +151,10 @@ export class FestiveScene {
           opacity: 0.32,
         });
         glow = new THREE.Sprite(gmat);
-        this.scene.add(glow);
+        layer.add(glow);
       }
-      this.scene.add(sprite);
+      layer.add(sprite);
 
-      const scale = kind.min + Math.random() * (kind.max - kind.min);
       this.items.push({
         sprite,
         glow,
@@ -191,12 +222,27 @@ export class FestiveScene {
     const topEdge = this.bounds.h / 2 + 1.5;
     const botEdge = -this.bounds.h / 2 - 1.5;
 
+    // Smooth scroll progress + velocity "energy" toward their targets.
+    this.scroll += (this.scrollTarget - this.scroll) * 0.08;
+    this.energy += (this.energyTarget - this.energy) * 0.1;
+    this.energyTarget *= 0.9; // velocity decays back to rest each frame
+
+    // Parallax: pan the two depth layers at different rates with scroll.
+    // (A function of absolute progress — never accumulates, so the drift
+    // speed stays constant.) Disabled under reduced motion.
+    if (!this.reduced) {
+      this.near.position.y = this.scroll * 2.4;
+      this.far.position.y = this.scroll * 1.0;
+    }
+    // Faster scrolling makes the field sway a little more — it "breathes".
+    const swayBoost = motion * (1 + this.energy * 0.6);
+
     for (const it of this.items) {
       const p = it.sprite.position;
       const dir = it.kind.motion === "rise" ? 1 : -1;
       p.y += it.speed * dt * motion * dir;
 
-      const sway = Math.sin(t * it.swayFreq + it.swayPhase) * it.swayAmp * 0.12 * motion;
+      const sway = Math.sin(t * it.swayFreq + it.swayPhase) * it.swayAmp * 0.12 * swayBoost;
       p.x = it.baseX + sway + this.mouse.x * 0.3 * it.scale;
 
       // Recycle when out of view.
@@ -220,8 +266,82 @@ export class FestiveScene {
       }
     }
 
+    this.updateBursts(dt);
     this.renderer.render(this.scene, this.camera);
   };
+
+  /** Advance + retire transient burst particles. */
+  private updateBursts(dt: number) {
+    if (!this.bursts.length) return;
+    for (let i = this.bursts.length - 1; i >= 0; i--) {
+      const b = this.bursts[i];
+      b.life -= dt;
+      if (b.life <= 0) {
+        this.burstGroup.remove(b.sprite);
+        b.sprite.material.dispose();
+        this.bursts.splice(i, 1);
+        continue;
+      }
+      b.vy -= 2.6 * dt; // gravity
+      b.sprite.position.x += b.vx * dt;
+      b.sprite.position.y += b.vy * dt;
+      b.sprite.material.rotation += b.rot * dt;
+      const k = b.life / b.maxLife; // 1 → 0
+      b.sprite.material.opacity = Math.min(1, k * 1.6) * 0.9;
+      b.sprite.scale.setScalar(b.scale * (0.6 + 0.4 * k));
+    }
+  }
+
+  /**
+   * Receive smoothed scroll progress (0..1) and instantaneous velocity so the
+   * field can parallax and react. Called from the shared RAF loop.
+   */
+  setScroll(progress: number, velocity: number) {
+    this.scrollTarget = Math.max(0, Math.min(1, progress));
+    const e = Math.min(1, Math.abs(velocity) / 28);
+    if (e > this.energyTarget) this.energyTarget = e;
+  }
+
+  /**
+   * Fire a celebratory burst of petals/flowers/confetti. `origin` is "center"
+   * (load) or "bottom" (footer). No-op under reduced motion.
+   */
+  burst(origin: "center" | "bottom" = "center") {
+    if (this.reduced || !this.texMap.size) return;
+    const files = ["blossom", "cherry", "hibiscus", "rosette", "confetti", "glowstar"]
+      .filter((f) => this.texMap.has(f));
+    const n = window.innerWidth < 768 ? 16 : 28;
+    const baseY = origin === "bottom" ? -this.bounds.h / 2 + 0.5 : -1.5;
+
+    for (let i = 0; i < n; i++) {
+      const file = files[Math.floor(Math.random() * files.length)];
+      const mat = new THREE.SpriteMaterial({
+        map: this.texMap.get(file)!,
+        transparent: true,
+        depthWrite: false,
+        opacity: 0,
+      });
+      const sprite = new THREE.Sprite(mat);
+      const scale = 0.35 + Math.random() * 0.5;
+      sprite.scale.setScalar(scale);
+      sprite.position.set((Math.random() - 0.5) * 3, baseY, 1);
+
+      // Fan outward and up, like a gentle firework of petals.
+      const angle = (Math.PI * (0.15 + Math.random() * 0.7)); // upward arc
+      const speed = 4 + Math.random() * 5;
+      this.burstGroup.add(sprite);
+      const maxLife = 1.6 + Math.random() * 0.8;
+      this.bursts.push({
+        sprite,
+        vx: Math.cos(angle) * speed * (Math.random() < 0.5 ? -1 : 1),
+        vy: Math.sin(angle) * speed + 2,
+        rot: (Math.random() - 0.5) * 3,
+        life: maxLife,
+        maxLife,
+        scale,
+      });
+    }
+  }
 
   setPaused(paused: boolean) {
     if (!paused) this.prevTime = performance.now() / 1000;

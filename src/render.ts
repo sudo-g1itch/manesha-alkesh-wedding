@@ -60,6 +60,7 @@ function familiesSection(): string {
       </div>`;
   return `
   <section class="section families" id="families">
+    <img class="mandala" src="images/decor/mandala.svg" alt="" aria-hidden="true" />
     <p class="eyebrow reveal">With joy &amp; gratitude</p>
     <hr class="divider reveal" />
     <p class="families__intro reveal">${esc(f.intro)}</p>
@@ -138,6 +139,7 @@ function messageSection(): string {
   const m = content.message;
   return `
   <section class="section message" id="message">
+    <img class="mandala" src="images/decor/mandala.svg" alt="" aria-hidden="true" />
     <figure class="message__rings reveal">
       <img src="${esc(m.image)}" alt="Wedding rings" loading="lazy" />
     </figure>

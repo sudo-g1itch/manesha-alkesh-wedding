@@ -25,7 +25,7 @@ Sourced via the [Iconify](https://iconify.design) API (downloaded locally):
 | ------------------------------------------------------------------------- | ------------------ | -------------------------------------------------------------------- |
 | `lantern`                                                                 | Google **Noto Emoji** | [Apache 2.0](https://github.com/googlefonts/noto-emoji)           |
 | `diya, blossom, cherry, hibiscus, rosette, lotus, sparkles, glowstar, confetti` | Microsoft **Fluent Emoji** | [MIT](https://github.com/microsoft/fluentui-emoji)        |
-| `mandala-center, mandala-ring`                                            | **Game-icons.net** | [CC-BY 3.0](https://game-icons.net)                                  |
+| `mandala` (flower-emblem)                                                 | **Game-icons.net** | [CC-BY 3.0](https://game-icons.net)                                  |
 
 The lanterns/flowers/sparkles power both the 3D floating scene and the hanging
 garland; the two `mandala-*` files are the rotating rangoli behind the hero.
