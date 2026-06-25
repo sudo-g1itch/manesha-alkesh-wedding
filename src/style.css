@@ -25,9 +25,9 @@
   --font-script: "Great Vibes", "Segoe Script", cursive;
   --font-body: "Montserrat", "Helvetica Neue", Arial, sans-serif;
 
-  /* Spacing rhythm */
-  --section-pad: clamp(5rem, 12vh, 10rem);
-  --gutter: clamp(1.25rem, 5vw, 4rem);
+  /* Spacing rhythm — smaller floor on phones, generous on desktop */
+  --section-pad: clamp(3.5rem, 11vh, 10rem);
+  --gutter: clamp(1.1rem, 5vw, 4rem);
   --maxw: 1100px;
 }
 
@@ -41,6 +41,16 @@
 
 html {
   scroll-behavior: auto; /* Lenis handles smoothing; native behavior off */
+  -webkit-text-size-adjust: 100%; /* stop iOS auto-inflating text in landscape */
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Media never forces horizontal overflow on small screens. */
+img,
+svg,
+canvas {
+  max-width: 100%;
 }
 
 body {
@@ -59,6 +69,15 @@ body {
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* `background-attachment: fixed` stutters (or is ignored) on touch devices —
+   fall back to a normal scroll attachment there. The fixed sky layer below
+   still provides depth. */
+@media (hover: none), (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
 }
 
 /* Dreamy soft-sky wash behind everything for extra cheer. */
@@ -88,6 +107,7 @@ html.lenis body {
   inset: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* track the visible viewport as mobile bars show/hide */
   z-index: 0;
   pointer-events: none;
 }
@@ -198,6 +218,7 @@ h3 {
    ============================================================ */
 .hero {
   min-height: 100vh;
+  min-height: 100svh; /* fits within the visible area, no address-bar jump */
   display: flex;
   flex-direction: column;
   position: relative;
@@ -513,15 +534,16 @@ h3 {
   margin-top: 0.9rem;
 }
 .event-card__maps {
-  display: inline-block;
-  margin-top: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* comfortable tap target */
+  margin-top: 1rem;
   font-size: 0.74rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--rose-deep);
   text-decoration: none;
   border-bottom: 1px solid var(--rose);
-  padding-bottom: 2px;
   transition: color 0.3s, border-color 0.3s;
 }
 .event-card__maps:hover {
@@ -675,8 +697,26 @@ h3 {
 }
 
 /* ============================================================
-   Responsive
+   Responsive — mobile-first tuning
    ============================================================ */
+
+/* Tablets & large phones */
+@media (max-width: 768px) {
+  .hero__photoband {
+    height: clamp(220px, 38vh, 360px);
+  }
+  /* Wide tracking can push the eyebrow onto two ragged lines on narrow
+     screens — ease it off and let it wrap gracefully. */
+  .eyebrow {
+    letter-spacing: 0.3em;
+  }
+  /* Cards already collapse via auto-fit; make sure they never feel cramped. */
+  .timeline__cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Phones */
 @media (max-width: 640px) {
   .families__grid {
     grid-template-columns: 1fr;
@@ -684,6 +724,36 @@ h3 {
   }
   .families__amp {
     transform: rotate(0);
+  }
+  .couple__grid {
+    gap: clamp(2rem, 8vw, 3rem);
+  }
+  /* Pull the hero names down a touch so the long script ascenders/descenders
+     never clip against the photo band above. */
+  .hero__names {
+    font-size: clamp(3.2rem, 16vw, 6rem);
+  }
+}
+
+/* Small phones — keep the countdown tidy as a 2×2 grid instead of a
+   wrapping flex row, and trim oversized display type. */
+@media (max-width: 430px) {
+  .countdown {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+    max-width: 320px;
+    margin-inline: auto;
+  }
+  .countdown__unit {
+    min-width: 0;
+    width: 100%;
+  }
+  .scroll-cue {
+    display: none; /* the hero is already tall; reclaim the space */
+  }
+  .site-footer__initials {
+    font-size: clamp(2.6rem, 18vw, 4rem);
   }
 }
 
