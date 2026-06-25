@@ -1,0 +1,708 @@
+/* ============================================================
+   Manesha & Alkesh — Wedding Invitation
+   Palette tokens, typography, layout, responsive, reduced-motion
+   ============================================================ */
+
+:root {
+  /* Festive palette */
+  --cream: #fff7ec;
+  --cream-deep: #ffedd6;
+  --blush: #ffd0c2;
+  --rose: #ff5d8f; /* bright pink */
+  --rose-deep: #d6296b; /* magenta */
+  --marigold: #ff9f1c; /* orange */
+  --marigold-deep: #f4760a;
+  --gold: #f2b705; /* golden */
+  --gold-soft: #ffd97d;
+  --teal: #2ec4b6;
+  --grape: #9b5de5; /* playful purple */
+  --charcoal: #3a241f;
+  --charcoal-soft: #7a5a4f;
+  --name-color: #a81b54; /* deep rose for the names */
+
+  /* Type */
+  --font-display: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  --font-script: "Great Vibes", "Segoe Script", cursive;
+  --font-body: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+
+  /* Spacing rhythm */
+  --section-pad: clamp(5rem, 12vh, 10rem);
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --maxw: 1100px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles smoothing; native behavior off */
+}
+
+body {
+  font-family: var(--font-body);
+  font-weight: 300;
+  color: var(--charcoal);
+  background: linear-gradient(
+    165deg,
+    #fff6e6 0%,
+    #ffe7c2 22%,
+    #ffd0d8 48%,
+    #ffc2e2 70%,
+    #e9c8ff 100%
+  );
+  background-attachment: fixed;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Dreamy soft-sky wash behind everything for extra cheer. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: url("/images/sky.jpg") center / cover no-repeat;
+  opacity: 0.22;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* ---------- 3D canvas ---------- */
+#scene {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* All content sits above the canvas */
+main,
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Typography ---------- */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-weight: 400;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  font-size: clamp(0.62rem, 1.4vw, 0.78rem);
+  color: var(--rose);
+}
+
+.script-amp {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+}
+
+/* ---------- Layout helpers ---------- */
+.section {
+  padding: var(--section-pad) var(--gutter);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  text-align: center;
+  position: relative;
+}
+
+/* ---------- Elegant underline along the top of each section ---------- */
+.section::before,
+.site-footer::before {
+  content: "";
+  position: absolute;
+  top: clamp(10px, 2.5vh, 26px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(78%, 560px);
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 162, 75, 0.55) 16%,
+    rgba(201, 162, 75, 0.95) 50%,
+    rgba(201, 162, 75, 0.55) 84%,
+    transparent
+  );
+}
+.site-footer {
+  position: relative;
+}
+
+/* Elegant separator: a fine tapering gold line with a small centred diamond. */
+.divider {
+  width: 100%;
+  max-width: 300px;
+  margin: clamp(1.5rem, 4vh, 2.75rem) auto;
+  height: 1px;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 162, 75, 0.85) 50%,
+    transparent
+  );
+  position: relative;
+}
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.divider::after {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  box-shadow: 0 0 0 4px var(--marigold-deep, #f4760a) inset;
+}
+.divider::before {
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(201, 162, 75, 0.7);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ---------- Full-width photo band at the top of the hero ---------- */
+.hero__photoband {
+  position: relative;
+  width: 100%;
+  height: clamp(280px, 46vh, 580px);
+  overflow: hidden;
+}
+.hero__photoband img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+}
+/* Subtle warm tint to harmonise the photo with the festive palette. */
+.hero__photoband::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 159, 28, 0.16),
+    rgba(214, 41, 107, 0.16)
+  );
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+/* Fade the bottom of the photo into the page's festive gradient. */
+.hero__photoband::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 62%,
+    rgba(255, 241, 226, 0.6) 84%,
+    #fff3e6 100%
+  );
+}
+
+.hero__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(2rem, 6vh, 4.5rem) var(--gutter) var(--gutter);
+  position: relative;
+}
+
+/* ---------- Countdown ---------- */
+.countdown {
+  display: flex;
+  gap: clamp(0.45rem, 2vw, 1.1rem);
+  justify-content: center;
+  margin-top: clamp(1.5rem, 4vh, 2.5rem);
+  flex-wrap: wrap;
+}
+.countdown__unit {
+  min-width: clamp(58px, 14vw, 88px);
+  padding: clamp(0.6rem, 1.6vw, 1rem) clamp(0.4rem, 1vw, 0.85rem);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(242, 183, 5, 0.55);
+  border-radius: 14px;
+  box-shadow: 0 16px 32px -22px rgba(214, 41, 107, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.countdown__num {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 5vw, 2.7rem);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--rose-deep);
+}
+.countdown__label {
+  font-size: 0.56rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--marigold-deep);
+  margin-top: 0.45rem;
+}
+.countdown__celebrate {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.4rem, 4vw, 2.1rem);
+  color: var(--rose-deep);
+}
+
+.hero__eyebrow {
+  margin-bottom: clamp(1rem, 3vh, 2rem);
+}
+
+.hero__names {
+  font-family: var(--font-script);
+  font-size: clamp(3.8rem, 13vw, 8.5rem);
+  line-height: 1.04;
+  font-weight: 400;
+  color: var(--name-color);
+  filter: drop-shadow(0 3px 10px rgba(255, 250, 240, 0.7));
+}
+.hero__names span:not(.script-amp) {
+  display: inline-block;
+}
+.hero__names .script-amp {
+  display: block;
+  font-family: var(--font-script);
+  font-size: clamp(2.4rem, 8vw, 5rem);
+  margin: -0.12em 0;
+  color: var(--marigold-deep);
+}
+
+.hero__tagline {
+  margin-top: clamp(1rem, 3vh, 2rem);
+  font-style: italic;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  color: var(--rose-deep);
+}
+/* Keep the hero sub-text crisp over the photo banner. */
+.hero__eyebrow,
+.hero__tagline,
+.hero__date,
+.hero__location {
+  text-shadow: 0 1px 9px rgba(255, 250, 245, 0.9),
+    0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.hero__date {
+  margin-top: 0.5rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: clamp(0.72rem, 1.8vw, 0.9rem);
+  color: var(--charcoal-soft);
+}
+
+.hero__location {
+  margin-top: 0.35rem;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  color: var(--gold);
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: clamp(1.5rem, 5vh, 3rem);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--charcoal-soft);
+}
+.scroll-cue__line {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(var(--rose), transparent);
+  animation: cueDrift 2.4s ease-in-out infinite;
+}
+@keyframes cueDrift {
+  0%,
+  100% {
+    transform: scaleY(0.6);
+    opacity: 0.4;
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+    transform-origin: top;
+  }
+}
+
+/* ---------- Hanging garland (festive toran) ---------- */
+.garland {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0 clamp(0.5rem, 3vw, 3rem);
+  pointer-events: none;
+  z-index: 3;
+}
+.garland__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+  animation: garlandSway 3.4s ease-in-out infinite;
+}
+.garland__item::before {
+  content: "";
+  width: 1.5px;
+  height: clamp(16px, 4vh, 42px);
+  background: linear-gradient(var(--marigold-deep), rgba(244, 118, 10, 0.1));
+}
+.garland__item img {
+  width: clamp(24px, 5vw, 46px);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(214, 41, 107, 0.28));
+}
+.garland__item:nth-child(odd) {
+  animation-duration: 3.9s;
+}
+.garland__item:nth-child(3n) {
+  animation-delay: -1.2s;
+}
+.garland__item:nth-child(3n + 1) {
+  animation-delay: -0.6s;
+}
+@keyframes garlandSway {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+/* ============================================================
+   FAMILIES
+   ============================================================ */
+.families__intro {
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  color: var(--rose-deep);
+  font-style: italic;
+}
+.families__grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 3rem);
+  margin-top: clamp(2rem, 5vh, 3.5rem);
+}
+.families__side {
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
+  color: var(--charcoal);
+}
+.families__amp {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  color: var(--gold);
+}
+.families__blessing {
+  margin-top: clamp(2rem, 5vh, 3rem);
+  max-width: 36ch;
+  margin-inline: auto;
+  color: var(--charcoal-soft);
+}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(1.25rem, 3vw, 2rem);
+  margin-top: clamp(2.5rem, 6vh, 4rem);
+}
+.event-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(201, 162, 75, 0.28);
+  border-radius: 18px;
+  padding: clamp(1.75rem, 3vw, 2.5rem) clamp(1.25rem, 2.5vw, 2rem);
+  text-align: center;
+  box-shadow: 0 18px 40px -28px rgba(140, 74, 85, 0.45);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.5s ease, border-color 0.5s ease;
+}
+.event-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(201, 162, 75, 0.7);
+  box-shadow: 0 28px 55px -28px rgba(140, 74, 85, 0.55);
+}
+.event-card__name {
+  font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+  color: var(--rose-deep);
+  margin-bottom: 0.75rem;
+}
+.event-card__row {
+  font-size: 0.92rem;
+  color: var(--charcoal);
+  margin: 0.2rem 0;
+}
+.event-card__label {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0.9rem;
+}
+.event-card__maps {
+  display: inline-block;
+  margin-top: 1.25rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rose-deep);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rose);
+  padding-bottom: 2px;
+  transition: color 0.3s, border-color 0.3s;
+}
+.event-card__maps:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+/* ============================================================
+   COUPLE
+   ============================================================ */
+.couple__photo {
+  margin: clamp(2rem, 5vh, 3rem) auto 0;
+  max-width: 560px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 75, 0.4);
+  box-shadow: 0 40px 80px -40px rgba(140, 74, 85, 0.6);
+}
+.couple__photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.couple__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(2rem, 6vw, 5rem);
+  margin-top: clamp(2.5rem, 6vh, 4rem);
+}
+.person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.person__role {
+  margin-top: 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.person__name {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: var(--charcoal);
+  margin: 0.35rem 0 0.9rem;
+}
+.person__bio {
+  max-width: 32ch;
+  color: var(--charcoal-soft);
+  font-size: 0.96rem;
+}
+
+/* ============================================================
+   MESSAGE
+   ============================================================ */
+/* Shared decorative image used as a section accent. */
+.accent-figure {
+  margin: clamp(2rem, 5vh, 3rem) auto 0;
+  max-width: 520px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  box-shadow: 0 34px 70px -40px rgba(140, 74, 85, 0.55);
+}
+.accent-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.message {
+  background: rgba(255, 255, 255, 0.4);
+}
+.message__rings {
+  width: clamp(120px, 22vw, 170px);
+  height: clamp(120px, 22vw, 170px);
+  margin: 0 auto clamp(1.5rem, 4vh, 2.25rem);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 75, 0.5);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.5),
+    0 24px 50px -28px rgba(140, 74, 85, 0.55);
+}
+.message__rings img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.message__heading {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  color: var(--rose-deep);
+  font-style: italic;
+}
+.message__body {
+  max-width: 46ch;
+  margin: clamp(1.5rem, 4vh, 2.25rem) auto 0;
+  font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+  color: var(--charcoal);
+  font-family: var(--font-display);
+  line-height: 1.7;
+}
+.message__signoff {
+  display: block;
+  margin-top: clamp(1.5rem, 4vh, 2.25rem);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  color: var(--gold);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  text-align: center;
+  padding: clamp(4rem, 10vh, 7rem) var(--gutter) clamp(2.5rem, 6vh, 4rem);
+}
+.site-footer__closing {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.2rem, 3.5vw, 2rem);
+  color: var(--rose-deep);
+}
+.site-footer__initials {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 6rem);
+  color: var(--gold);
+  margin: clamp(1rem, 3vh, 1.75rem) 0 0.25rem;
+  letter-spacing: 0.05em;
+}
+.site-footer__date {
+  letter-spacing: 0.4em;
+  font-size: 0.8rem;
+  color: var(--charcoal-soft);
+}
+
+/* ============================================================
+   Reveal animation base state (GSAP toggles .is-visible)
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 640px) {
+  .families__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .families__amp {
+    transform: rotate(0);
+  }
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .scroll-cue__line,
+  .garland__item,
+  .section::before,
+  .site-footer::before {
+    animation: none;
+  }
+  .event-card {
+    transition: none;
+  }
+}
