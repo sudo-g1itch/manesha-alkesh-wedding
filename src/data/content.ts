@@ -62,6 +62,7 @@ export const content = {
       time: "5:00 PM onwards",
       venue: "CSI Heritage Bungalow",
       address: "Fort Kochi, Kerala",
+      dressCode: "Black Indo-Western",
       mapsUrl:
         "https://www.google.com/maps/search/?api=1&query=CSI+Heritage+Bungalow+Fort+Kochi",
     },
@@ -71,6 +72,7 @@ export const content = {
       time: "Muhurtham · 12:00 PM – 12:22 PM",
       venue: "Ernakulam Town Hall",
       address: "Ernakulam, Kochi, Kerala",
+      dressCode: "Soft pastel colours",
       mapsUrl:
         "https://www.google.com/maps/search/?api=1&query=Ernakulam+Town+Hall+Kochi",
     },
@@ -80,6 +82,7 @@ export const content = {
       time: "4:00 PM onwards",
       venue: "Highrange Convention Centre & Club House",
       address: "Kattappana, Idukki, Kerala",
+      dressCode: "Formals",
       mapsUrl:
         "https://www.google.com/maps/search/?api=1&query=Highrange+Convention+Centre+and+Club+House+Kattappana",
     },
